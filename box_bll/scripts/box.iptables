@@ -396,6 +396,11 @@ start_tproxy() {
       fi
   fi
 
+  if [ "${iptables}" = "${SYS_IP6TABLES} -w 100" ]; then
+    ${SYS_IP6TABLES} -w 100 -A OUTPUT -p udp --dport 53 -j REJECT --reject-with icmp6-port-unreachable
+    log Info "DNS 策略: [IPv6] UDP/53 出站 REJECT 已挂载."
+  fi
+
   ${iptables} -t mangle -N DIVERT
   ${iptables} -t mangle -F DIVERT
   ${iptables} -t mangle -A DIVERT -j MARK --set-xmark "${mark_id}"
@@ -418,6 +423,7 @@ stop_tproxy() {
     if [ "${iptables}" = "${SYS_IP6TABLES} -w 100" ]; then
       ${SYS_IP} -6 rule del fwmark "${mark_id}" table "${table_id}" pref "${table_id}"
       ${SYS_IP} -6 route del local default dev lo table "${table_id}"
+      ${SYS_IP6TABLES} -w 100 -D OUTPUT -p udp --dport 53 -j REJECT --reject-with icmp6-port-unreachable 2>/dev/null
     else
       ${SYS_IP} rule del fwmark "${mark_id}" table "${table_id}" pref "${table_id}"
       ${SYS_IP} route del local default dev lo table "${table_id}"

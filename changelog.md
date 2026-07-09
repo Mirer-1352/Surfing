@@ -1,3 +1,12 @@
+# v7.8.2
+- sync latest branch
+- fix known issues and improve stability
+
+# v7.8.1
+- ipv6 intelligent management
+- network filtering upgraded to ssids (mac) 
+- fix known issues and improve stability
+
 # v7.8.0
 **Major changes:**
 - add `apply_wifi_bypass()`, dynamically manage `net_bypass` chain
